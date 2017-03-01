@@ -1,11 +1,12 @@
-import sys
+import sys, os, os.path
+
 
 try:
     import mwclient
+    import ConfigParser
 except ImportError:
     sys.stderr.write(
-            'mwclient not installed; install perhaps via'
-            ' pip install mwclient.\n')
+            'mwclient or ConfigParser not installed; install perhaps via pip.\n')
     raise
 
 
@@ -21,6 +22,8 @@ if not from_cmdline:
     import vim
 
 VALID_PROTOCOLS = [ 'http', 'https' ]
+config = ConfigParser.ConfigParser()
+config.read(os.path.expanduser('~/.write.conf'))
 
 # Utility.
 
@@ -76,14 +79,14 @@ def site():
     s = mwclient.Site((scheme, base_url()),
                       path=get_from_config_or_prompt('g:mediawiki_editor_path',
                                                      'Mediawiki Script Path: ',
-                                                     text='/w/'))
+                                                     text='/w/'),
+                                                     httpauth=(config.get('wiki', 'auth_user'),
+                                                     config.get('wiki', 'auth_pass')))
     try:
         s.login(
                 get_from_config_or_prompt('g:mediawiki_editor_username',
                     'Mediawiki Username: '),
-                get_from_config_or_prompt('g:mediawiki_editor_password',
-                    'Mediawiki Password: ', password=True)
-                )
+                config.get('wiki', 'pass'))
     except mwclient.errors.LoginError as e:
         sys.stderr.write('Error logging in: %s\n' % e)
         vim.command(

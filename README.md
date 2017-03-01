@@ -1,3 +1,7 @@
+# THIS IS A CUSTOM VERSION CONFIGURED FOR MY USE
+
+Please use original at [aquach/vim-mediawiki-editor](https://github.com/aquach/vim-mediawiki-editor).
+
 # vim-mediawiki-editor
 
 Edit MediaWiki articles from the comfort of Vim, your favorite text editor!
