@@ -84,15 +84,10 @@ def site():
                                                      config.get('wiki', 'auth_pass')))
     try:
         s.login(
-                get_from_config_or_prompt('g:mediawiki_editor_username',
-                    'Mediawiki Username: '),
+                config.get('wiki', 'user'),
                 config.get('wiki', 'pass'))
     except mwclient.errors.LoginError as e:
         sys.stderr.write('Error logging in: %s\n' % e)
-        vim.command(
-                'unlet g:mediawiki_editor_username '
-                'g:mediawiki_editor_password'
-                )
         raise
 
     site.cached_site = s
@@ -128,7 +123,7 @@ def mw_write(article_name):
     s = site()
     page = s.Pages[article_name]
     summary = input('Edit summary: ')
-    minor = input('Minor edit? [y/n]: ') == 'y'
+    minor = get_from_config('g:mediawiki_editor_minor_edit')
 
     print ' '
 
