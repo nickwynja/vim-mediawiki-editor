@@ -112,7 +112,12 @@ def infer_default(article_name):
 
 def mw_read(article_name):
     s = site()
-    vim.current.buffer[:] = s.Pages[article_name].text().split("\n")
+    b = vim.current.buffer
+    if b[:]:
+        # Buffer has content so
+        # create vsplit and use that buffer
+        vim.command('vsplit')
+    b[:] = s.Pages[article_name].text().split("\n")
     vim.command('set ft=mediawiki')
     vim.command("let b:article_name = '%s'" % sq_escape(article_name))
 
@@ -151,7 +156,7 @@ def mw_diff(article_name):
 def mw_browse(article_name):
     article_name = infer_default(article_name)
 
-    url = 'http://%s/wiki/%s' % (base_url(), article_name)
+    url = 'https://%s/wiki/%s' % (base_url(), article_name)
     if not var_exists('g:loaded_netrw'):
         vim.command('runtime! autoload/netrw.vim')
 
