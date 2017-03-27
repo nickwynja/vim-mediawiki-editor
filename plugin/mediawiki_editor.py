@@ -110,17 +110,19 @@ def infer_default(article_name):
 
 # Commands.
 
+
 def mw_read(article_name):
     s = site()
     b = vim.current.buffer
-    if b[:]:
+    if b[:] and b[0] is not None:
         # Buffer has content so
         # create vsplit and use that buffer
-        vim.command('vsplit')
+        vim.command('vnew')
+        b = vim.current.buffer
     b[:] = s.Pages[article_name].text().split("\n")
+    b.name = article_name
     vim.command('set ft=mediawiki')
     vim.command("let b:article_name = '%s'" % sq_escape(article_name))
-
 
 def mw_write(article_name):
     article_name = infer_default(article_name)
