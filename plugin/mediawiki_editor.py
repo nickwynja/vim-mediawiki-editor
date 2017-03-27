@@ -114,7 +114,7 @@ def infer_default(article_name):
 def mw_read(article_name):
     s = site()
     b = vim.current.buffer
-    if b[:] and b[0] is not None:
+    if b[:] and b[0] is not "":
         # Buffer has content so
         # create vsplit and use that buffer
         vim.command('vnew')
@@ -122,6 +122,7 @@ def mw_read(article_name):
     b[:] = s.Pages[article_name].text().split("\n")
     b.name = article_name
     vim.command('set ft=mediawiki')
+    vim.command('set nomodified')
     vim.command("let b:article_name = '%s'" % sq_escape(article_name))
 
 def mw_write(article_name):
@@ -130,13 +131,14 @@ def mw_write(article_name):
     s = site()
     page = s.Pages[article_name]
     summary = input('Edit summary: ')
-    minor = get_from_config('g:mediawiki_editor_minor_edit')
+    minor = True if not summary else False
 
     print ' '
 
     result = page.save("\n".join(vim.current.buffer[:]), summary=summary,
             minor=minor)
     if result['result']:
+        vim.command('set nomodified')
         print 'Successfully edited %s.' % result['title']
     else:
         sys.stderr.write('Failed to edit %s.\n' % article_name)
@@ -158,7 +160,7 @@ def mw_diff(article_name):
 def mw_browse(article_name):
     article_name = infer_default(article_name)
 
-    url = 'https://%s/wiki/%s' % (base_url(), article_name)
+    url = 'http://%s/wiki/%s' % (base_url(), article_name)
     if not var_exists('g:loaded_netrw'):
         vim.command('runtime! autoload/netrw.vim')
 
