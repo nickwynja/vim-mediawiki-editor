@@ -18,6 +18,11 @@ function! s:MWRead(article_name)
   python mw_read(vim.eval('a:article_name'))
 endfunction
 
+function! s:MWReload(...)
+  call <SID>InitializeClient()
+  python mw_reload(vim.eval('a:000'))
+endfunction
+
 function! s:MWWrite(...)
   call <SID>InitializeClient()
   python mw_write(vim.eval('a:000'))
@@ -34,6 +39,7 @@ function! s:MWBrowse(...)
 endfunction
 
 command! -nargs=1 MWRead call <SID>MWRead(<f-args>)
+command! -nargs=? MWReload call <SID>MWReload(<f-args>)
 command! -nargs=? MWWrite call <SID>MWWrite(<f-args>)
 command! -nargs=? MWDiff call <SID>MWDiff(<f-args>)
 command! -nargs=? MWBrowse call <SID>MWBrowse(<f-args>)

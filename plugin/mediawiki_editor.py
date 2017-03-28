@@ -125,6 +125,29 @@ def mw_read(article_name):
     vim.command('set nomodified')
     vim.command("let b:article_name = '%s'" % sq_escape(article_name))
 
+
+def mw_reload(article_name):
+    article_name = infer_default(article_name)
+    b = vim.current.buffer
+    buff_name_list = b.name.rsplit('/', 1)
+    buff_name = buff_name_list[-1]
+    vim.command('let b:mod = &modified')
+    is_modified = True if vim.current.buffer.vars.get('mod') == 1 else False
+    if buff_name == article_name:
+        if is_modified is False:
+            s = site()
+            b[:] = s.Pages[article_name].text().split("\n")
+            vim.command('set nomodified')
+        else:
+            to_reload = input('Buffer modified, reload anyway? (Y/n): ')
+            if to_reload == 'y':
+                s = site()
+                b[:] = s.Pages[article_name].text().split("\n")
+                vim.command('set nomodified')
+                vim.command(':redraw!')
+    else:
+        sys.stderr.write('Failed to reload %s.\n' % article_name)
+
 def mw_write(article_name):
     article_name = infer_default(article_name)
 
