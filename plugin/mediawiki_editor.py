@@ -79,9 +79,7 @@ def site():
     s = mwclient.Site((scheme, base_url()),
                       path=get_from_config_or_prompt('g:mediawiki_editor_path',
                                                      'Mediawiki Script Path: ',
-                                                     text='/w/'),
-                                                     httpauth=(config.get('wiki', 'auth_user'),
-                                                     config.get('wiki', 'auth_pass')))
+                                                     text='/w/'))
     try:
         s.login(
                 config.get('wiki', 'user'),
